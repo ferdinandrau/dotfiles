@@ -1,0 +1,25 @@
+window:
+  padding:
+    x: 14
+    y: 14
+  dynamic_padding: true
+font:
+  normal:
+    family: "JetBrains Mono"
+    style: "Medium"
+  size: 14.0
+colors:
+  primary:
+    background: "#1b1b1c"
+    foreground: "#ebdbb2"
+  normal:
+    black: "#060606"
+    red: "#fb4934"
+    green: "#98971a"
+    yellow: "#eebd35"
+    blue: "#7fa2ac"
+    magenta: "#b16286"
+    cyan: "#6fae9e"
+    white: "#f1e8e5"
+# shell:
+#   program: "/opt/homebrew/bin/zsh"
