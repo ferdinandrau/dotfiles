@@ -75,7 +75,7 @@ set_normal_keymap("<BS>", "<C-o>")
 -- Autocommands --
 ------------------
 
-local group = vim.api.nvim_create_augroup("UserConfig", { clear = true })
+local group = vim.api.nvim_create_augroup("UserConfig", {})
 
 local function create_autocmd(event, opts)
     opts.group = group
