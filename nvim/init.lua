@@ -56,7 +56,7 @@ g.mapleader = " "
 g.maplocalleader = ","
 
 local function set_normal_keymap(lhs, rhs)
-    vim.keymap.set("n", lhs, rhs, { noremap = true, silent = true })
+    vim.keymap.set("n", lhs, rhs, { silent = true })
 end
 
 set_normal_keymap("K", "<C-w><C-k>")
