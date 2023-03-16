@@ -41,8 +41,10 @@ vim.diagnostic.config({
     },
 })
 
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" })
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" })
+local lsp = vim.lsp
+
+lsp.handlers["textDocument/hover"] = lsp.with(lsp.handlers.hover, { border = "single" })
+lsp.handlers["textDocument/signatureHelp"] = lsp.with(lsp.handlers.signature_help, { border = "single" })
 
 --------------
 -- Mappings --
@@ -75,9 +77,9 @@ set_normal_keymap("<BS>", "<C-o>")
 
 local group = vim.api.nvim_create_augroup("UserConfig", { clear = true })
 
-local function create_autocmd(events, opts)
+local function create_autocmd(event, opts)
     opts.group = group
-    vim.api.nvim_create_autocmd(events, opts)
+    vim.api.nvim_create_autocmd(event, opts)
 end
 
 create_autocmd("TextYankPost", {
