@@ -39,5 +39,11 @@ for arg; do
             __ln "$__script_dir/zsh/functions" "$__xdg_config_dir/zsh/."
             __ln "$__xdg_config_dir/zsh/.zshenv" "$HOME/."
             ;;
+        tmux)
+            __rm "$HOME/.tmux.conf"
+            __rm "$__xdg_config_dir/tmux"
+            __mkdir "$__xdg_config_dir/tmux"
+            __ln "$__script_dir/tmux/tmux.conf" "$__xdg_config_dir/tmux/."
+            ;;
     esac
 done
