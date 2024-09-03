@@ -45,5 +45,10 @@ for arg; do
             __mkdir "$__xdg_config_dir/tmux"
             __ln "$__script_dir/tmux/tmux.conf" "$__xdg_config_dir/tmux/."
             ;;
+        kitty)
+            __rm "$__xdg_config_dir/kitty"
+            __mkdir "$__xdg_config_dir/kitty"
+            __ln "$__script_dir/kitty/kitty.conf" "$__xdg_config_dir/kitty/."
+            ;;
     esac
 done
