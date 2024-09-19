@@ -47,6 +47,9 @@ for arg; do
             ;;
         kitty)
             __rm "$__xdg_config_dir/kitty"
+            __rm "$__xdg_cache_dir/kitty"
+            __rm "$HOME/Library/Caches/kitty"
+            __rm "$HOME/Library/Saved Application State/net.kovidgoyal.kitty.savedState"
             __mkdir "$__xdg_config_dir/kitty"
             __ln "$__script_dir/kitty/kitty.conf" "$__xdg_config_dir/kitty/."
             ;;
