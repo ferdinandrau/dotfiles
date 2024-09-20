@@ -53,5 +53,15 @@ for arg; do
             __mkdir "$__xdg_config_dir/kitty"
             __ln "$__script_dir/kitty/kitty.conf" "$__xdg_config_dir/kitty/."
             ;;
+        nvim)
+            __rm "$__xdg_config_dir/nvim"
+            __rm "$__xdg_data_dir/nvim"
+            __rm "$__xdg_state_dir/nvim"
+            __rm "$__xdg_cache_dir/nvim"
+            __mkdir "$__xdg_config_dir/nvim/lua"
+            __ln "$__script_dir/nvim/init.lua" "$__xdg_config_dir/nvim/."
+            __ln "$__script_dir/nvim/lazy_plugins" "$__xdg_config_dir/nvim/lua/."
+            __ln "$__script_dir/nvim/lazy-lock.json" "$__xdg_config_dir/nvim/."
+            ;;
     esac
 done
