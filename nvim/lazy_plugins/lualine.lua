@@ -38,6 +38,7 @@ lualine.setup({
                 '',
                 'checkhealth',
                 'help',
+                'lspinfo',
                 'qf',
                 'lazy',
                 'mason',
