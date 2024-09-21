@@ -4,10 +4,18 @@ if not (vim.uv or vim.loop).fs_stat(lazy_path) then
     vim.fn.system({
         'git',
         'clone',
-        '--filter=blob:none',
-        '--branch=stable',
+        '--single-branch',
         'https://github.com/folke/lazy.nvim.git',
         lazy_path,
+    })
+    local file = io.open(vim.fn.stdpath('config') .. '/lazy-lock.json', 'r')
+    local lock = vim.json.decode(file:read('*a'))
+    vim.fn.system({
+        'git',
+        '-C',
+        lazy_path,
+        'checkout',
+        lock['lazy.nvim'].commit,
     })
 end
 
@@ -186,6 +194,7 @@ require('lazy').setup(specs, {
         border = 'single',
         backdrop = 100,
         custom_keys = {
+            ['<localleader>i'] = false,
             ['<localleader>l'] = false,
             ['<localleader>t'] = false,
         },
