@@ -154,8 +154,8 @@ local specs = {
             '<Leader>ff',
             '<Leader>ft',
             '<Leader>fb',
-            '<Leader>fh',
             '<Leader>fc',
+            '<Leader>fh',
         },
         config = from_file('telescope'),
     },
@@ -188,6 +188,8 @@ if ok and type(local_specs) == 'table' then
 end
 
 require('lazy').setup(specs, {
+    rocks = { enabled = false },
+    change_detection = { enabled = false },
     readme = { enabled = false },
     ui = {
         wrap = false,
@@ -210,7 +212,7 @@ require('lazy').setup(specs, {
             init = '⏻',
             keys = '⌨',
             plugin = '▢',
-            require = '☽',
+            require = '⭳',
             runtime = '◎',
             source = '→',
             start = '▷',

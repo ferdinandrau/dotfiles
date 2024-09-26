@@ -1,6 +1,4 @@
-local lualine = require('lualine')
-
-lualine.setup({
+require('lualine').setup({
     options = {
         icons_enabled = false,
         component_separators = '',
@@ -38,9 +36,9 @@ lualine.setup({
                 '',
                 'checkhealth',
                 'help',
-                'lspinfo',
                 'qf',
                 'lazy',
+                'lspinfo',
                 'mason',
                 'TelescopePrompt',
             },

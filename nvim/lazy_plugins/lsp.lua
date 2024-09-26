@@ -23,7 +23,7 @@ local servers = {
     'typst_lsp',
 }
 
-local ok, local_servers = pcall(require, 'local.language_servers')
+local ok, local_servers = pcall(require, 'local.lspconfig_servers')
 
 if ok and type(local_servers) == 'table' then
     servers = vim.tbl_deep_extend('force', servers, local_servers)
