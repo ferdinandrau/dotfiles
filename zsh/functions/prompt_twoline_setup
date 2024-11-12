@@ -1,0 +1,64 @@
+emulate -LR zsh
+
+function prompt_twoline_help {
+    echo 'My custom two-line prompt'
+}
+
+prompt_opts=(cr sp percent subst)
+
+
+PS1=$'%8F┌%f %B%3F%n%f%b@%B%1F%m%f%b %8F::%f %B%4F%4~%f%b${vcs_info_msg_0_-}%(1j. %8F::%f %6F%(2j.%j jobs.1 job)%f.)\n'
+PS1+='%8F└%f %F{%(?.10.9)}%(!.#.$)%f '
+unset RPS1
+
+PS2='  %F{%(?.10.9)}%(!.#.$)%f '
+RPS2=%5F%^%f
+
+PS3='%6F>%f '
+unset RPS3
+
+
+local had_precmd=
+
+if [[ -v precmd_functions ]]; then
+    had_precmd=1
+    local precmd_before=$(typeset -p precmd_functions)
+fi
+
+if ! (( $precmd_functions[(Ie)vcs_info] )); then
+    autoload -Uz vcs_info
+    precmd_functions+=(vcs_info)
+fi
+
+function _print_newline {
+    function _print_newline {
+        echo
+    }
+}
+
+if ! (( $precmd_functions[(Ie)_print_newline] )); then
+    precmd_functions+=(_print_newline)
+fi
+
+
+local vcs_info_before=$(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*')
+
+zstyle -d ':vcs_info:*'
+zstyle -d ':vcs_info:git:*'
+
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' unstagedstr !
+zstyle ':vcs_info:git:*' stagedstr +
+zstyle ':vcs_info:git:*' formats ' %8F::%f %13F%b%f%u%2F%c%f'
+zstyle ':vcs_info:git:*' actionformats ' %8F::%f %13F%b%f%u%2F%c%f (%3F%a%f)'
+
+
+prompt_cleanup 'unfunction prompt_twoline_help _print_newline'
+prompt_cleanup "zstyle -d ':vcs_info:*'; zstyle -d ':vcs_info:git:*'; eval \"$vcs_info_before\""
+
+if [[ -n $had_precmd ]]; then
+    prompt_cleanup $precmd_before
+else
+    prompt_cleanup 'unset precmd_functions'
+fi

@@ -1,0 +1,201 @@
+if ! zmodload -e zsh/complist; then
+    zmodload zsh/complist
+fi
+
+if ! zmodload -e zsh/nearcolor && ! [[ ${COLORTERM-} = *(24bit|truecolor)* ]]; then
+    zmodload zsh/nearcolor
+fi
+
+fpath+=("${${(%):-%x}:P:h}/functions" "$ZSH_CONFIG_DIR/functions")
+
+if command_exists brew; then
+    fpath=("$(brew --prefix)/share/zsh/site-functions" "${fpath[@]}")
+fi
+
+
+if command_exists nvim; then
+    export EDITOR=nvim VISUAL=nvim
+fi
+
+if command_exists fzf; then
+    export FZF_DEFAULT_OPTS='--no-separator --info=inline-right --color=16,current-bg:-1,prompt:10,pointer:6'
+    if command_exists fd; then
+        export FZF_DEFAULT_COMMAND='fd --type file --follow'
+    fi
+fi
+
+if command_exists zoxide; then
+    export _ZO_DATA_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/zoxide
+    if command_exists fzf; then
+        export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --no-sort"
+        _ZO_FZF_OPTS+=' --reverse --height=50% --margin=0,1,1 --border=sharp --scrollbar="│ "'
+        _ZO_FZF_OPTS+=' --preview-window=right,30%,border-left,noinfo'
+        _ZO_FZF_OPTS+=' --cycle --bind=tab:down,shift-tab:up,ctrl-d:preview-down,ctrl-u:preview-up'
+        if command_exists eza; then
+            _ZO_FZF_OPTS+=' --preview="eza --group-directories-first --all --oneline --color=always {2..}"'
+        else
+            _ZO_FZF_OPTS+=' --preview="ls -lA {2..}"'
+        fi
+    fi
+fi
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_env.zsh"
+
+
+setopt AUTO_CD INTERACTIVE_COMMENTS
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_options.zsh"
+
+
+function {
+    local plugin_root=${${(%):-%x}:P:h}/plugins
+
+    . "$plugin_root/zsh-completions/zsh-completions.plugin.zsh"
+
+    ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=()
+    ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=()
+    ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
+    . "$plugin_root/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    . "$plugin_root/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+    . "$plugin_root/zsh-you-should-use/you-should-use.plugin.zsh"
+}
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_plugins.zsh"
+
+
+unsetopt BEEP
+
+KEYTIMEOUT=1
+
+bindkey -v
+
+bindkey -r ^B ^C ^F ^Q ^S ^Z
+
+bindkey ^H backward-delete-char
+bindkey '^?' backward-delete-char
+bindkey ^W backward-kill-word
+bindkey ^U kill-whole-line
+
+bindkey ^N down-history
+bindkey ^P up-history
+
+bindkey -M menuselect '^[' send-break
+bindkey -M menuselect '^[[Z' reverse-menu-complete
+
+autoload -Uz edit-command-line down-line-or-beginning-search up-line-or-beginning-search
+
+zle -N edit-command-line
+zle -N down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+
+bindkey ^K edit-command-line
+bindkey -a ^K edit-command-line
+
+bindkey ^E down-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+bindkey '^[OB' down-line-or-beginning-search
+bindkey -a ^E down-line-or-beginning-search
+bindkey -a '^[[B' down-line-or-beginning-search
+bindkey -a '^[OB' down-line-or-beginning-search
+bindkey -a j down-line-or-beginning-search
+
+bindkey ^Y up-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[OA' up-line-or-beginning-search
+bindkey -a ^Y up-line-or-beginning-search
+bindkey -a '^[[A' up-line-or-beginning-search
+bindkey -a '^[OA' up-line-or-beginning-search
+bindkey -a k up-line-or-beginning-search
+
+if [[ -n ${widgets[autosuggest-accept]-} ]]; then
+    bindkey ^A autosuggest-accept
+    bindkey -a ^A autosuggest-accept
+else
+    bindkey -r ^A
+fi
+
+if [[ -n ${widgets[autosuggest-toggle]-} ]]; then
+    bindkey ^T autosuggest-toggle
+    bindkey -a ^T autosuggest-toggle
+else
+    bindkey -r ^T
+fi
+
+if command_exists fzf && command_exists nvim; then
+    autoload -Uz fzf-nvim-open
+    zle -N fzf-nvim-open
+    bindkey ^O fzf-nvim-open
+    bindkey -a ^O fzf-nvim-open
+else
+    bindkey -r ^O
+fi
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_bindings.zsh"
+
+
+setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE
+
+HISTFILE=$ZSH_STATE_DIR/history
+HISTSIZE=100000
+SAVEHIST=100000
+
+
+setopt MENU_COMPLETE
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' completer _extensions _complete _approximate
+zstyle ':completion:*' matcher-list '' m:{a-zA-Z}={A-Za-z} 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' complete-options true
+zstyle ':completion:*' list-packed true
+zstyle ':completion:*' list-rows-first true
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/compcache-$ZSH_VERSION"
+
+autoload -Uz compinit && compinit -d "$ZSH_CACHE_DIR/compdump-$ZSH_VERSION"
+
+ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;)'
+ZLE_SPACE_SUFFIX_CHARS='&|'
+
+if command_exists zoxide; then
+    eval "$(zoxide init zsh --cmd cd)"
+fi
+
+
+setopt TRANSIENT_RPROMPT
+
+ZLE_RPROMPT_INDENT=0
+
+zle_highlight=(region:fg=15,bg=8 paste:none)
+
+PROMPT_EOL_MARK=%15F%1K↵%k%f
+
+autoload -Uz promptinit && promptinit
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_prompt.zsh"
+
+if [[ -z ${prompt_theme-} ]]; then
+    if [[ -v SSH_CONNECTION ]]; then
+        prompt twoline
+    else
+        prompt oneline
+    fi
+fi
+
+
+if command_exists eza; then
+    alias ls=eza
+    alias la='eza --group-directories-first --all'
+    alias ll='eza --group-directories-first --all --long'
+    alias lt='eza --group-directories-first --tree'
+else
+    alias la='ls -A'
+    alias ll='ls -lA'
+fi
+
+if command_exists nvim; then
+    alias vi=nvim
+fi
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_aliases.zsh"
