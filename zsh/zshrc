@@ -2,7 +2,7 @@ if ! zmodload -e zsh/complist; then
     zmodload zsh/complist
 fi
 
-if ! zmodload -e zsh/nearcolor && ! [[ ${COLORTERM-} = *(24bit|truecolor)* ]]; then
+if ! (zmodload -e zsh/nearcolor || [[ ${COLORTERM-} = *(24bit|truecolor)* ]]); then
     zmodload zsh/nearcolor
 fi
 
@@ -153,7 +153,7 @@ zstyle ':completion:*' list-rows-first true
 zstyle ':completion:*' use-cache true
 zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/compcache-$ZSH_VERSION"
 
-autoload -Uz compinit && compinit -d "$ZSH_CACHE_DIR/compdump-$ZSH_VERSION"
+autoload -Uz compinit; compinit -d "$ZSH_CACHE_DIR/compdump-$ZSH_VERSION"
 
 ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;)'
 ZLE_SPACE_SUFFIX_CHARS='&|'
@@ -171,7 +171,7 @@ zle_highlight=(region:fg=15,bg=8 paste:none)
 
 PROMPT_EOL_MARK=%15F%1K↵%k%f
 
-autoload -Uz promptinit && promptinit
+autoload -Uz promptinit; promptinit
 
 source_if_readable "$ZSH_CONFIG_DIR/rc_prompt.zsh"
 
