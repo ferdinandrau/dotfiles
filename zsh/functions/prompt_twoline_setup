@@ -6,42 +6,27 @@ function prompt_twoline_help {
 
 prompt_opts=(cr sp percent subst)
 
+local cleanup_commands=('unfunction prompt_twoline_help')
 
-PS1=$'%8F┌%f %B%3F%n%f%b@%B%1F%m%f%b %8F::%f %B%4F%4~%f%b${vcs_info_msg_0_-}%(1j. %8F::%f %6F%(2j.%j jobs.1 job)%f.)\n'
-PS1+='%8F└%f %F{%(?.10.9)}%(!.#.$)%f '
-unset RPS1
-
-PS2='  %F{%(?.10.9)}%(!.#.$)%f '
-RPS2=%5F%^%f
-
-PS3='%6F>%f '
-unset RPS3
-
-
-local had_precmd=
-
-if [[ -v precmd_functions ]]; then
-    had_precmd=1
-    local precmd_before=$(typeset -p precmd_functions)
-fi
-
-if ! (( $precmd_functions[(Ie)vcs_info] )); then
+if (( ! $precmd_functions[(Ie)vcs_info] )); then
     autoload -Uz vcs_info
-    precmd_functions+=(vcs_info)
+    autoload -Uz add-zsh-hook; add-zsh-hook precmd vcs_info
+    cleanup_commands+=('add-zsh-hook -d precmd vcs_info')
 fi
 
-function _print_newline {
-    function _print_newline {
+function _prompt_twoline_print_newline {
+    function _prompt_twoline_print_newline {
         echo
     }
 }
 
-if ! (( $precmd_functions[(Ie)_print_newline] )); then
-    precmd_functions+=(_print_newline)
-fi
+autoload -Uz add-zsh-hook; add-zsh-hook precmd _prompt_twoline_print_newline
 
+cleanup_commands+=('add-zsh-hook -d precmd _prompt_twoline_print_newline')
+cleanup_commands+=('unfunction _prompt_twoline_print_newline')
 
-local vcs_info_before=$(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*')
+cleanup_commands+=("zstyle -d ':vcs_info:*'; zstyle -d ':vcs_info:git:*'")
+cleanup_commands+=($(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*'))
 
 zstyle -d ':vcs_info:*'
 zstyle -d ':vcs_info:git:*'
@@ -50,15 +35,19 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' unstagedstr !
 zstyle ':vcs_info:git:*' stagedstr +
-zstyle ':vcs_info:git:*' formats ' %8F::%f %13F%b%f%u%2F%c%f'
-zstyle ':vcs_info:git:*' actionformats ' %8F::%f %13F%b%f%u%2F%c%f (%3F%a%f)'
+zstyle ':vcs_info:git:*' formats ' %8F(%f%13F%b%f%u%2F%c%f%8F)%f'
+zstyle ':vcs_info:git:*' actionformats ' %8F(%f%13F%b%f%u%2F%c%f %11F%a%f%8F)%f'
 
+prompt_cleanup ${(j:; :)cleanup_commands}
 
-prompt_cleanup 'unfunction prompt_twoline_help _print_newline'
-prompt_cleanup "zstyle -d ':vcs_info:*'; zstyle -d ':vcs_info:git:*'; eval \"$vcs_info_before\""
+PS1='%B%8F(%f%3F%n%f@%1F%m%f%8F)%f %8F(%f%4F%4~%f%8F)%f'
+PS1+=\${vcs_info_msg_0_-}
+PS1+='%(1j. %8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)'
+PS1+=$'%b\n %F{%(?.10.9)}%(!.#.$)%f '
+RPS1=
 
-if [[ -n $had_precmd ]]; then
-    prompt_cleanup $precmd_before
-else
-    prompt_cleanup 'unset precmd_functions'
-fi
+PS2='   '
+RPS2=%5F%^%f
+
+PS3='%6F#%f '
+RPS3=

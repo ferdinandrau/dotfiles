@@ -6,31 +6,16 @@ function prompt_oneline_help {
 
 prompt_opts=(cr sp percent subst)
 
+local cleanup_commands=('unfunction prompt_oneline_help')
 
-PS1='%F{%(?.10.9)}%(!.#.➜)%f %B%4F%1~%f%b '
-RPS1='${vcs_info_msg_0_-}'
-
-unset PS2
-RPS2=%5F%^%f
-
-PS3='%6F>%f '
-unset RPS3
-
-
-local had_precmd=
-
-if [[ -v precmd_functions ]]; then
-    had_precmd=1
-    local precmd_before=$(typeset -p precmd_functions)
-fi
-
-if ! (( $precmd_functions[(Ie)vcs_info] )); then
+if (( ! $precmd_functions[(Ie)vcs_info] )); then
     autoload -Uz vcs_info
-    precmd_functions+=(vcs_info)
+    autoload -Uz add-zsh-hook; add-zsh-hook precmd vcs_info
+    cleanup_commands+=('add-zsh-hook -d precmd vcs_info')
 fi
 
-
-local vcs_info_before=$(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*')
+cleanup_commands+=("zstyle -d ':vcs_info:*'; zstyle -d ':vcs_info:git:*'")
+cleanup_commands+=($(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*'))
 
 zstyle -d ':vcs_info:*'
 zstyle -d ':vcs_info:git:*'
@@ -40,14 +25,15 @@ zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' unstagedstr !
 zstyle ':vcs_info:git:*' stagedstr +
 zstyle ':vcs_info:git:*' formats %13F%b%f%u%2F%c%f
-zstyle ':vcs_info:git:*' actionformats '%13F%b%f%u%2F%c%f (%3F%a%f)'
+zstyle ':vcs_info:git:*' actionformats '%13F%b%f%u%2F%c%f (%11F%a%f)'
 
+prompt_cleanup ${(j:; :)cleanup_commands}
 
-prompt_cleanup 'unfunction prompt_oneline_help'
-prompt_cleanup "zstyle -d ':vcs_info:*'; zstyle -d ':vcs_info:git:*'; eval \"$vcs_info_before\""
+PS1='%B%4F%1~%f%b %F{%(?.10.9)}%(!.#.$)%f '
+RPS1=\${vcs_info_msg_0_-}
 
-if [[ -n $had_precmd ]]; then
-    prompt_cleanup $precmd_before
-else
-    prompt_cleanup 'unset precmd_functions'
-fi
+PS2=
+RPS2=%5F%^%f
+
+PS3='%6F#%f '
+RPS3=
