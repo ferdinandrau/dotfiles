@@ -169,7 +169,7 @@ ZLE_RPROMPT_INDENT=0
 
 zle_highlight=(region:fg=15,bg=8 paste:none)
 
-PROMPT_EOL_MARK=%15F%1K↵%k%f
+PROMPT_EOL_MARK=%15F%1K␤%k%f
 
 autoload -Uz promptinit; promptinit
 
