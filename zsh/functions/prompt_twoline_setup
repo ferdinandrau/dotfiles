@@ -40,13 +40,13 @@ zstyle ':vcs_info:git:*' actionformats ' %8F(%f%13F%b%f%u%2F%c%f %11F%a%f%8F)%f'
 
 prompt_cleanup ${(j:; :)cleanup_commands}
 
-PS1='%B%8F(%f%3F%n%f@%1F%m%f%8F)%f %8F(%f%4F%4~%f%8F)%f'
+PS1='%8F╭─%f %8F(%f%3F%n%f@%1F%m%f%8F)%f %8F(%f%4F%4~%f%8F)%f'
 PS1+=\${vcs_info_msg_0_-}
-PS1+='%(1j. %8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)'
-PS1+=$'%b\n %F{%(?.10.9)}%(!.#.$)%f '
+PS1+=$'%(1j. %8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)\n'
+PS1+='%8F╰─%f %F{%(?.10.9)}%(!.#.$)%f '
 RPS1=
 
-PS2='   '
+PS2='     '
 RPS2=%5F%^%f
 
 PS3='%6F#%f '
