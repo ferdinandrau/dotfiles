@@ -8,10 +8,6 @@ fi
 
 fpath+=("${${(%):-%x}:P:h}/functions" "$ZSH_CONFIG_DIR/functions")
 
-if command_exists brew; then
-    fpath=("$(brew --prefix)/share/zsh/site-functions" "${fpath[@]}")
-fi
-
 
 if command_exists nvim; then
     export EDITOR=nvim VISUAL=nvim
