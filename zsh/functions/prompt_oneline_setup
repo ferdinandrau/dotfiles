@@ -8,7 +8,7 @@ prompt_opts=(cr sp percent subst)
 
 local cleanup_commands=('unfunction prompt_oneline_help')
 
-if (( ! $precmd_functions[(Ie)vcs_info] )); then
+if (( ! ${precmd_functions[(Ie)vcs_info]-0} )); then
     autoload -Uz vcs_info
     autoload -Uz add-zsh-hook; add-zsh-hook precmd vcs_info
     cleanup_commands+=('add-zsh-hook -d precmd vcs_info')
