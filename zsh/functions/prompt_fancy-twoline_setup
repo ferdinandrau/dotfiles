@@ -8,7 +8,7 @@ local cleanup_commands=('unfunction prompt_fancy-twoline_help')
 
 cleanup_commands+=("${PROMPT_EOL_MARK+typeset -g PROMPT_EOL_MARK=}${PROMPT_EOL_MARK-unset PROMPT_EOL_MARK}")
 
-PROMPT_EOL_MARK=%B%S␤%s%b
+PROMPT_EOL_MARK=%S␤%s
 
 if (( ! ${precmd_functions[(Ie)vcs_info]-0} )); then
     autoload -Uz vcs_info
