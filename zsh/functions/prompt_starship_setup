@@ -1,0 +1,15 @@
+function prompt_starship_help {
+    echo 'The cross-shell Starship prompt (https://starship.rs)'
+}
+
+prompt_opts=(cr sp percent subst)
+
+local cleanup_commands=('unfunction prompt_starship_help')
+
+cleanup_commands+=("${PROMPT_EOL_MARK+typeset -g PROMPT_EOL_MARK=}${PROMPT_EOL_MARK-unset PROMPT_EOL_MARK}")
+
+PROMPT_EOL_MARK=%1K␤%k
+
+prompt_cleanup ${(j:; :)cleanup_commands}
+
+eval "$(starship init zsh)"

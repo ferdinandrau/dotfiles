@@ -1,12 +1,16 @@
 emulate -LR zsh
 
-function prompt_oneline_help {
+function prompt_fancy-oneline_help {
     echo 'My custom one-line prompt'
 }
 
 prompt_opts=(cr sp percent subst)
 
-local cleanup_commands=('unfunction prompt_oneline_help')
+local cleanup_commands=('unfunction prompt_fancy-oneline_help')
+
+cleanup_commands+=("${PROMPT_EOL_MARK+typeset -g PROMPT_EOL_MARK=}${PROMPT_EOL_MARK-unset PROMPT_EOL_MARK}")
+
+PROMPT_EOL_MARK=%1K␤%k
 
 if (( ! ${precmd_functions[(Ie)vcs_info]-0} )); then
     autoload -Uz vcs_info
@@ -24,16 +28,16 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' unstagedstr !
 zstyle ':vcs_info:git:*' stagedstr +
-zstyle ':vcs_info:git:*' formats %13F%b%f%u%2F%c%f
-zstyle ':vcs_info:git:*' actionformats '%13F%b%f%u%2F%c%f (%11F%a%f)'
+zstyle ':vcs_info:git:*' formats ' %8F(%f%13F%b%f%u%2F%c%f%8F)%f'
+zstyle ':vcs_info:git:*' actionformats ' %8F(%f%13F%b%f%u%2F%c%f %11F%a%f%8F)%f'
 
 prompt_cleanup ${(j:; :)cleanup_commands}
 
-PS1='%B%4F%1~%f%b %F{%(?.10.9)}%(!.#.$)%f '
-RPS1=\${vcs_info_msg_0_-}
+PS1='%8F[%f%4F%4~%f%8F]%f %F{%(?.10.9)}%(!.#.ζ)%f '
+RPS1='${vcs_info_msg_0_-}%(1j. %8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)'
 
 PS2=
-RPS2=%5F%^%f
+RPS2=' %5F%^%f'
 
-PS3='%6F#%f '
+PS3='# %6F?%f '
 RPS3=

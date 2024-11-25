@@ -165,19 +165,11 @@ ZLE_RPROMPT_INDENT=0
 
 zle_highlight=(region:fg=15,bg=8 paste:none)
 
-PROMPT_EOL_MARK=%15F%1K␤%k%f
-
 autoload -Uz promptinit; promptinit
 
 source_if_readable "$ZSH_CONFIG_DIR/rc_prompt.zsh"
 
-if [[ -z ${prompt_theme-} ]]; then
-    if [[ -v SSH_CONNECTION ]]; then
-        prompt twoline
-    else
-        prompt oneline
-    fi
-fi
+if [[ -z ${prompt_theme-} ]] { prompt simple }
 
 
 if command_exists eza; then
