@@ -8,15 +8,15 @@ local cleanup_commands=('unfunction prompt_simple_help')
 
 cleanup_commands+=("${PROMPT_EOL_MARK+typeset -g PROMPT_EOL_MARK=}${PROMPT_EOL_MARK-unset PROMPT_EOL_MARK}")
 
-PROMPT_EOL_MARK=%1K\\n%k
+PROMPT_EOL_MARK=%B%S\\n%s%b
 
 prompt_cleanup ${(j:; :)cleanup_commands}
 
-PS1='%n@%m %4~ %(!.#.$) '
+PS1='[%n@%m %4~]%(!.#.$) '
 RPS1=
 
 PS2=
-RPS2=%^
+RPS2=' %^'
 
 PS3='# ? '
 RPS3=

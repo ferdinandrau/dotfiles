@@ -8,7 +8,7 @@ local cleanup_commands=('unfunction prompt_starship_help')
 
 cleanup_commands+=("${PROMPT_EOL_MARK+typeset -g PROMPT_EOL_MARK=}${PROMPT_EOL_MARK-unset PROMPT_EOL_MARK}")
 
-PROMPT_EOL_MARK=%1K␤%k
+PROMPT_EOL_MARK=%B%S␤%s%b
 
 prompt_cleanup ${(j:; :)cleanup_commands}
 
