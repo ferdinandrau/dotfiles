@@ -33,22 +33,15 @@ if [[ $OSTYPE = darwin* ]]; then
     if [[ -x /usr/libexec/path_helper ]]; then
         eval "$(/usr/libexec/path_helper -s)" && if [[ -o LOGIN ]] { unsetopt GLOBAL_RCS }
     fi
+    export HOMEBREW_NO_ANALYTICS=1
+    export HOMEBREW_NO_EMOJI=1
+    export HOMEBREW_NO_ENV_HINTS=1
     case $(uname -m) in
         arm64)
-            if [[ -x /opt/homebrew/bin/brew ]]; then
-                eval "$(/opt/homebrew/bin/brew shellenv)"
-                export HOMEBREW_NO_ANALYTICS=1
-                export HOMEBREW_NO_EMOJI=1
-                export HOMEBREW_NO_ENV_HINTS=1
-            fi
+            if [[ -x /opt/homebrew/bin/brew ]] { eval "$(/opt/homebrew/bin/brew shellenv)" }
             ;;
         x86_64)
-            if [[ -x /usr/local/bin/brew ]]; then
-                eval "$(/usr/local/bin/brew shellenv)"
-                export HOMEBREW_NO_ANALYTICS=1
-                export HOMEBREW_NO_EMOJI=1
-                export HOMEBREW_NO_ENV_HINTS=1
-            fi
+            if [[ -x /usr/local/bin/brew ]] { eval "$(/usr/local/bin/brew shellenv)" }
             ;;
     esac
 fi

@@ -13,26 +13,23 @@ if command_exists nvim; then
     export EDITOR=nvim VISUAL=nvim
 fi
 
-if command_exists fzf; then
-    export FZF_DEFAULT_OPTS='--no-separator --info=inline-right --color=16,current-bg:-1,prompt:10,pointer:6'
-    if command_exists fd; then
-        export FZF_DEFAULT_COMMAND='fd --type file --follow'
-    fi
+export FZF_DEFAULT_OPTS='--no-separator --info=inline-right --color=16,current-bg:-1,prompt:10,pointer:6'
+
+if command_exists fd; then
+    export FZF_DEFAULT_COMMAND='fd --type file --follow'
 fi
 
-if command_exists zoxide; then
-    export _ZO_DATA_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/zoxide
-    if command_exists fzf; then
-        export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --no-sort"
-        _ZO_FZF_OPTS+=' --reverse --height=50% --margin=0,1,1 --border=sharp --scrollbar="│ "'
-        _ZO_FZF_OPTS+=' --preview-window=right,30%,border-left,noinfo'
-        _ZO_FZF_OPTS+=' --cycle --bind=tab:down,shift-tab:up,ctrl-d:preview-down,ctrl-u:preview-up'
-        if command_exists eza; then
-            _ZO_FZF_OPTS+=' --preview="eza --group-directories-first --all --oneline --color=always {2..}"'
-        else
-            _ZO_FZF_OPTS+=' --preview="ls -lA {2..}"'
-        fi
-    fi
+export _ZO_DATA_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/zoxide
+
+export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --no-sort"
+_ZO_FZF_OPTS+=' --reverse --height=50% --margin=0,1,1 --border=sharp --scrollbar="│ "'
+_ZO_FZF_OPTS+=' --preview-window=right,30%,border-left,noinfo'
+_ZO_FZF_OPTS+=' --cycle --bind=tab:down,shift-tab:up,ctrl-d:preview-down,ctrl-u:preview-up'
+
+if command_exists eza; then
+    _ZO_FZF_OPTS+=' --preview="eza --group-directories-first --all --oneline --color=always {2..}"'
+else
+    _ZO_FZF_OPTS+=' --preview="ls -lA {2..}"'
 fi
 
 source_if_readable "$ZSH_CONFIG_DIR/rc_env.zsh"
