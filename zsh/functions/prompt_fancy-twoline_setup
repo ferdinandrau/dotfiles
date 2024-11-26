@@ -48,7 +48,7 @@ else
     PS1=%8F[%f%3F%n%f@%1F%m%f%8F]%f
 fi
 
-PS1+=' %8F[%f%4F%4~%f%8F]%f'
+PS1+=' %8F[%f%4F%6~%f%8F]%f'
 PS1+=$'${vcs_info_msg_0_-}%(1j. %8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)\n'
 PS1+='%F{%(?.10.9)}%(!.#.ζ)%f '
 RPS1=
