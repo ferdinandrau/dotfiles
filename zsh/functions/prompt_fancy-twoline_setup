@@ -43,12 +43,11 @@ zstyle ':vcs_info:git:*' actionformats ' %8F(%f%13F%b%f%u%2F%c%f %11F%a%f%8F)%f'
 prompt_cleanup ${(j:; :)cleanup_commands}
 
 if [[ $OSTYPE = darwin* ]]; then
-    PS1=%8F[%f%3F%n%f@%1F$(scutil --get LocalHostName)%f%8F]%f
+    PS1='%8F[%f%3F%n%f%8F]%f %8F[%f%1F$(scutil --get LocalHostName)%f%8F]%f %8F[%f%4F%6~%f%8F]%f'
 else
-    PS1=%8F[%f%3F%n%f@%1F%m%f%8F]%f
+    PS1='%8F[%f%3F%n%f%8F]%f %8F[%f%1F%m%f%8F]%f %8F[%f%4F%6~%f%8F]%f'
 fi
 
-PS1+=' %8F[%f%4F%6~%f%8F]%f'
 PS1+=$'${vcs_info_msg_0_-}%(1j. %8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)\n'
 PS1+='%F{%(?.10.9)}%(!.#.ζ)%f '
 RPS1=
@@ -56,5 +55,5 @@ RPS1=
 PS2='  '
 RPS2=' %5F%^%f'
 
-PS3='# %6F?%f '
+PS3='%6F›%f '
 RPS3=
