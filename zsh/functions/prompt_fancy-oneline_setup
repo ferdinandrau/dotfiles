@@ -22,20 +22,21 @@ cleanup_commands+=($(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*'))
 zstyle -d ':vcs_info:*'
 zstyle -d ':vcs_info:git:*'
 
+zstyle ':vcs_info:*' max-exports 1
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' unstagedstr !
 zstyle ':vcs_info:git:*' stagedstr +
-zstyle ':vcs_info:git:*' formats ' %8F(%f%13F%b%f%u%2F%c%f%8F)%f'
-zstyle ':vcs_info:git:*' actionformats ' %8F(%f%13F%b%f%u%2F%c%f %11F%a%f%8F)%f'
+zstyle ':vcs_info:git:*' formats '%8F(%f%13F%b%f%u%2F%c%f%8F)%f'
+zstyle ':vcs_info:git:*' actionformats '%8F(%f%13F%b%f%u%2F%c%f %11F%a%f%8F)%f'
 
 prompt_cleanup ${(j:; :)cleanup_commands}
 
 PS1='%8F[%f%4F%1~%f%8F]%f %F{%(?.10.9)}%(!.#.ζ)%f '
-RPS1='${vcs_info_msg_0_-}%(1j. %8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)'
+RPS1='${vcs_info_msg_0_-}%(1j.${vcs_info_msg_0_:+ }%8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)'
 
 PS2=
-RPS2=' %5F%^%f'
+RPS2=%5F%^%f
 
 PS3='%6F›%f '
 RPS3=

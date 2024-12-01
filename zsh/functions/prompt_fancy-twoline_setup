@@ -33,6 +33,7 @@ cleanup_commands+=($(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*'))
 zstyle -d ':vcs_info:*'
 zstyle -d ':vcs_info:git:*'
 
+zstyle ':vcs_info:*' max-exports 1
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' unstagedstr !
@@ -53,7 +54,7 @@ PS1+='%F{%(?.10.9)}%(!.#.ζ)%f '
 RPS1=
 
 PS2='  '
-RPS2=' %5F%^%f'
+RPS2=%5F%^%f
 
 PS3='%6F›%f '
 RPS3=
