@@ -43,15 +43,17 @@ source_if_readable "$ZSH_CONFIG_DIR/rc_options.zsh"
 function {
     local plugin_root=${${(%):-%x}:P:h}/plugins
 
-    . "$plugin_root/zsh-completions/zsh-completions.plugin.zsh"
+    . "$plugin_root/zsh-defer/zsh-defer.plugin.zsh"
+
+    zsh-defer "$plugin_root/zsh-completions/zsh-completions.plugin.zsh"
 
     ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=()
     ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=()
     ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
-    . "$plugin_root/zsh-autosuggestions/zsh-autosuggestions.zsh"
-    . "$plugin_root/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-    . "$plugin_root/zsh-you-should-use/you-should-use.plugin.zsh"
+    zsh-defer . "$plugin_root/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    zsh-defer . "$plugin_root/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+    zsh-defer . "$plugin_root/zsh-you-should-use/you-should-use.plugin.zsh"
 }
 
 source_if_readable "$ZSH_CONFIG_DIR/rc_plugins.zsh"
@@ -162,13 +164,15 @@ zstyle ':completion:*' list-rows-first true
 zstyle ':completion:*' use-cache true
 zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/compcache-$ZSH_VERSION"
 
-autoload -Uz compinit; compinit -d "$ZSH_CACHE_DIR/compdump-$ZSH_VERSION"
+autoload -Uz compinit
+
+zsh-defer compinit -d "$ZSH_CACHE_DIR/compdump-$ZSH_VERSION"
 
 ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;)'
 ZLE_SPACE_SUFFIX_CHARS='&|'
 
 if command_exists zoxide; then
-    eval "$(zoxide init zsh --cmd cd)"
+    zsh-defer eval "$(zoxide init zsh --cmd cd)"
 fi
 
 
