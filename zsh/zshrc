@@ -43,9 +43,8 @@ source_if_readable "$ZSH_CONFIG_DIR/rc_options.zsh"
 function {
     local plugin_root=${${(%):-%x}:P:h}/plugins
 
+    . "$plugin_root/zsh-completions/zsh-completions.plugin.zsh"
     . "$plugin_root/zsh-defer/zsh-defer.plugin.zsh"
-
-    zsh-defer "$plugin_root/zsh-completions/zsh-completions.plugin.zsh"
 
     ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=()
     ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=()
