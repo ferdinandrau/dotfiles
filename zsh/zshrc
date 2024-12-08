@@ -155,9 +155,7 @@ zstyle ':completion:*' list-rows-first true
 zstyle ':completion:*' use-cache true
 zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/compcache-$ZSH_VERSION"
 
-autoload -Uz compinit
-
-zsh-defer compinit -d "$ZSH_CACHE_DIR/compdump-$ZSH_VERSION"
+autoload -Uz compinit; compinit -d "$ZSH_CACHE_DIR/compdump-$ZSH_VERSION"
 
 ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;)'
 ZLE_SPACE_SUFFIX_CHARS='&|'
