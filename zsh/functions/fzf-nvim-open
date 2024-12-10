@@ -1,3 +1,0 @@
-zle || return
-
-fzf --multi --bind 'enter:become(nvim {+})' </dev/tty

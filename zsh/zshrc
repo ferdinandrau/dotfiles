@@ -13,7 +13,10 @@ if command_exists nvim; then
     export EDITOR=nvim VISUAL=nvim
 fi
 
-export FZF_DEFAULT_OPTS='--no-separator --info=inline-right --color=16,current-bg:-1,prompt:10,pointer:6'
+export FZF_DEFAULT_OPTS='--cycle --scroll-off=2 --hscroll-off=6 --reverse --height=50% --border=sharp --margin=0,1,1 --info=inline-right'
+FZF_DEFAULT_OPTS+=' --scrollbar="│ " --prompt= --pointer=▌ --marker=▌ --marker-multi-line=▖▌▘ --ellipsis=… --tabstop=4 --highlight-line --color=16'
+FZF_DEFAULT_OPTS+=,current-fg:-1:regular,current-bg:7:regular,gutter:-1:regular,hl:11:regular,current-hl:11:regular,query:-1:regular
+FZF_DEFAULT_OPTS+=,border:8:regular,label:-1:bold,info:8:regular,prompt:10:regular,pointer:6:regular
 
 if command_exists fd; then
     export FZF_DEFAULT_COMMAND='fd --type file --follow'
@@ -21,15 +24,13 @@ fi
 
 export _ZO_DATA_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/zoxide
 
-export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --no-sort"
-_ZO_FZF_OPTS+=' --reverse --height=50% --margin=0,1,1 --border=sharp --scrollbar="│ "'
-_ZO_FZF_OPTS+=' --preview-window=right,30%,border-left,noinfo'
-_ZO_FZF_OPTS+=' --cycle --bind=tab:down,shift-tab:up,ctrl-d:preview-down,ctrl-u:preview-up'
+export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --no-sort --preview-window=30%,border-left,noinfo"
+_ZO_FZF_OPTS+=' --bind=tab:down,shift-tab:up,ctrl-d:preview-down,ctrl-u:preview-up'
 
 if command_exists eza; then
-    _ZO_FZF_OPTS+=' --preview="eza --group-directories-first --all --oneline --color=always {2..}"'
+    _ZO_FZF_OPTS+=' --preview="eza --all --group-directories-first --oneline --color=always {2..}"'
 else
-    _ZO_FZF_OPTS+=' --preview="ls -lA {2..}"'
+    _ZO_FZF_OPTS+=' --preview="ls -A1 {2..}"'
 fi
 
 source_if_readable "$ZSH_CONFIG_DIR/rc_env.zsh"
@@ -108,11 +109,11 @@ bindkey -a ^A autosuggest-accept
 bindkey ^T autosuggest-toggle
 bindkey -a ^T autosuggest-toggle
 
-if command_exists fzf && command_exists nvim; then
-    autoload -Uz fzf-nvim-open
-    zle -N fzf-nvim-open
-    bindkey ^O fzf-nvim-open
-    bindkey -a ^O fzf-nvim-open
+if command_exists fzf; then
+    autoload -Uz fzf-open
+    zle -N fzf-open
+    bindkey ^O fzf-open
+    bindkey -a ^O fzf-open
 else
     bindkey -r ^O
 fi
@@ -179,10 +180,10 @@ if [[ -z ${prompt_theme-} ]] { prompt simple }
 
 
 if command_exists eza; then
-    alias ls=eza
-    alias la='eza --group-directories-first --all'
-    alias ll='eza --group-directories-first --all --long'
+    alias ls='eza --group-directories-first'
     alias lt='eza --group-directories-first --tree'
+    alias la='eza --all --group-directories-first'
+    alias ll='eza --all --group-directories-first --long'
 else
     alias la='ls -A'
     alias ll='ls -lA'
