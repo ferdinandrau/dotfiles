@@ -177,7 +177,11 @@ autoload -Uz promptinit; promptinit
 source_if_readable "$ZSH_CONFIG_DIR/rc_prompt.zsh"
 
 if [[ -z ${prompt_theme-} ]]; then
-    prompt simple
+    if [[ -v SSH_TTY ]]; then
+        prompt fancy-twoline
+    else
+        prompt fancy-oneline
+    fi
 fi
 
 
