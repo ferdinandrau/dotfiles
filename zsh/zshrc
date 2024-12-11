@@ -128,7 +128,7 @@ function zle-keymap-select {
 
 zle -N zle-keymap-select
 
-zle-line-init() {
+function zle-line-init {
     echo -ne '\e[5 q'
 }
 
@@ -176,7 +176,9 @@ autoload -Uz promptinit; promptinit
 
 source_if_readable "$ZSH_CONFIG_DIR/rc_prompt.zsh"
 
-if [[ -z ${prompt_theme-} ]] { prompt simple }
+if [[ -z ${prompt_theme-} ]]; then
+    prompt simple
+fi
 
 
 if command_exists eza; then
