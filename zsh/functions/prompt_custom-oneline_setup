@@ -1,10 +1,10 @@
-function prompt_fancy-oneline_help {
+function prompt_custom-oneline_help {
     echo 'My custom one-line prompt'
 }
 
 prompt_opts=(cr sp percent subst)
 
-local cleanup_commands=('unfunction prompt_fancy-oneline_help')
+local cleanup_commands=('unfunction prompt_custom-oneline_help')
 
 cleanup_commands+=("${PROMPT_EOL_MARK+typeset -g PROMPT_EOL_MARK=}${PROMPT_EOL_MARK-unset PROMPT_EOL_MARK}")
 

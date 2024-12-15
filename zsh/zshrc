@@ -176,9 +176,9 @@ source_if_readable "$ZSH_CONFIG_DIR/rc_prompt.zsh"
 
 if [[ -z ${prompt_theme-} ]]; then
     if [[ -v SSH_TTY ]]; then
-        prompt fancy-twoline
+        prompt custom-twoline
     else
-        prompt fancy-oneline
+        prompt custom-oneline
     fi
 fi
 

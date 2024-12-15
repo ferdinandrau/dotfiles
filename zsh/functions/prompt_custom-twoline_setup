@@ -1,10 +1,10 @@
-function prompt_fancy-twoline_help {
+function prompt_custom-twoline_help {
     echo 'My custom two-line prompt'
 }
 
 prompt_opts=(cr sp percent subst)
 
-local cleanup_commands=('unfunction prompt_fancy-twoline_help')
+local cleanup_commands=('unfunction prompt_custom-twoline_help')
 
 cleanup_commands+=("${PROMPT_EOL_MARK+typeset -g PROMPT_EOL_MARK=}${PROMPT_EOL_MARK-unset PROMPT_EOL_MARK}")
 
@@ -16,16 +16,16 @@ if (( ! ${precmd_functions[(Ie)vcs_info]-0} )); then
     cleanup_commands+=('add-zsh-hook -d precmd vcs_info')
 fi
 
-function _prompt_fancy-twoline_print_newline {
-    function _prompt_fancy-twoline_print_newline {
+function _prompt_custom-twoline_print_newline {
+    function _prompt_custom-twoline_print_newline {
         echo
     }
 }
 
-autoload -Uz add-zsh-hook; add-zsh-hook precmd _prompt_fancy-twoline_print_newline
+autoload -Uz add-zsh-hook; add-zsh-hook precmd _prompt_custom-twoline_print_newline
 
-cleanup_commands+=('add-zsh-hook -d precmd _prompt_fancy-twoline_print_newline')
-cleanup_commands+=('unfunction _prompt_fancy-twoline_print_newline')
+cleanup_commands+=('add-zsh-hook -d precmd _prompt_custom-twoline_print_newline')
+cleanup_commands+=('unfunction _prompt_custom-twoline_print_newline')
 
 cleanup_commands+=("zstyle -d ':vcs_info:*'; zstyle -d ':vcs_info:git:*'")
 cleanup_commands+=($(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*'))
