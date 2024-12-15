@@ -144,15 +144,13 @@ HISTSIZE=100000
 SAVEHIST=100000
 
 
-setopt MENU_COMPLETE
+setopt MENU_COMPLETE LIST_ROWS_FIRST LIST_PACKED
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' completer _extensions _complete _approximate
 zstyle ':completion:*' matcher-list '' m:{a-zA-Z}={A-Za-z} 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' complete-options true
-zstyle ':completion:*' list-packed true
-zstyle ':completion:*' list-rows-first true
 zstyle ':completion:*' use-cache true
 zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/compcache-$ZSH_VERSION"
 
