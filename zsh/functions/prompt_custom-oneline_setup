@@ -27,13 +27,13 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' unstagedstr !
 zstyle ':vcs_info:git:*' stagedstr +
-zstyle ':vcs_info:git:*' formats '%8F(%f%13F%b%f%u%2F%c%f%8F)%f'
-zstyle ':vcs_info:git:*' actionformats '%8F(%f%13F%b%f%u%2F%c%f %11F%a%f%8F)%f'
+zstyle ':vcs_info:git:*' formats %13F%b%f%u%2F%c%f
+zstyle ':vcs_info:git:*' actionformats '%13F%b%f%u%2F%c%f %11F%a%f'
 
 prompt_cleanup ${(j:; :)cleanup_commands}
 
-PS1='%8F[%f%4F%1~%f%8F]%f %F{%(?.10.9)}%(!.#.ζ)%f '
-RPS1='${vcs_info_msg_0_-}%(1j.${vcs_info_msg_0_:+ }%8F(%f%6F%(2j.%j jobs.1 job)%f%8F)%f.)'
+PS1='%4F%1~%f %F{%(?.10.9)}%(!.#.❯)%f '
+RPS1='${vcs_info_msg_0_-}%(1j.${vcs_info_msg_0_:+  }%6F%(2j.%j jobs.1 job)%f.)'
 
 PS2=
 RPS2=%5F%^%f
