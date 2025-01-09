@@ -1,0 +1,61 @@
+ZDOTDIR=${${(%):-%x}:P:h}
+
+ZSH_CONFIG_DIR=${XDG_CONFIG_HOME:-$HOME/.config}/zsh
+ZSH_DATA_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
+ZSH_STATE_DIR=${XDG_STATE_HOME:-$HOME/.local/state}/zsh
+ZSH_CACHE_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+
+mkdir -p "$ZSH_STATE_DIR" "$ZSH_CACHE_DIR"
+
+typeset -U PATH path FPATH fpath
+
+function command_exists {
+    (( ${+commands[${1-}]} ))
+}
+
+function source_if_readable {
+    if [[ -r ${1-} && -f ${1-} ]]; then
+        . "$1"
+    fi
+}
+
+function append_to_path {
+    if [[ -n ${1-} ]]; then
+        path+=("$1")
+    fi
+}
+
+function prepend_to_path {
+    if [[ -n ${1-} ]]; then
+        path=("$1" "${path[@]}")
+    fi
+}
+
+if [[ $OSTYPE = darwin* ]]; then
+    if [[ -o INTERACTIVE && ${TERM_PROGRAM-} = Apple_Terminal ]]; then
+        SHELL_SESSIONS_DISABLE=1
+    fi
+    if [[ -x /usr/libexec/path_helper ]]; then
+        eval "$(/usr/libexec/path_helper -s)"
+        if [[ -o LOGIN && ${?-} -eq 0 ]]; then
+            unsetopt GLOBAL_RCS
+        fi
+    fi
+    export HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_EMOJI=1 HOMEBREW_NO_ENV_HINTS=1
+    case $(uname -m) in
+        arm64)
+            if [[ -x /opt/homebrew/bin/brew ]]; then
+                eval "$(/opt/homebrew/bin/brew shellenv)"
+            fi
+            ;;
+        x86_64)
+            if [[ -x /usr/local/bin/brew ]]; then
+                eval "$(/usr/local/bin/brew shellenv)"
+            fi
+            ;;
+    esac
+fi
+
+prepend_to_path "$HOME/.local/bin"
+
+source_if_readable "$ZSH_CONFIG_DIR/env"

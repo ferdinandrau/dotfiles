@@ -1,0 +1,248 @@
+fpath+=("${${(%):-%x}:P:h}/functions" "$ZSH_CONFIG_DIR/functions" "$ZSH_DATA_DIR/functions")
+
+setopt AUTO_CD \
+    HIST_IGNORE_ALL_DUPS \
+    HIST_IGNORE_SPACE \
+    INTERACTIVE_COMMENTS \
+    LIST_PACKED \
+    LIST_ROWS_FIRST \
+    MENU_COMPLETE \
+    TRANSIENT_RPROMPT \
+    NO_BEEP
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_options"
+
+HISTFILE=$ZSH_STATE_DIR/history
+HISTSIZE=100000
+SAVEHIST=100000
+
+if command_exists nvim; then
+    export EDITOR=nvim VISUAL=nvim
+    alias vi=nvim
+fi
+
+function {
+    local -a fzf_theme=(
+        fg:-1:regular
+        bg:-1:regular
+        hl:1:regular
+        current-fg:0:regular
+        current-bg:7:regular
+        current-hl:1:regular
+        gutter:-1:regular
+        query:-1:regular
+        info:8:regular
+        border:8:regular
+        label:-1:bold
+        prompt:10:regular
+        pointer:4:regular
+        marker:5:regular
+        spinner:2:regular
+        header:14:regular
+    )
+
+    local -a fzf_flags=(
+        --walker=file,follow
+        --reverse
+        --info=inline-right
+        --height=50%
+        --border=sharp
+        --margin=0,1
+        --cycle
+        --scroll-off=2
+        --hscroll-off=6
+        --tabstop=4
+        --highlight-line
+        --prompt=
+        --pointer=
+        --marker=▌
+        --marker-multi-line=▖▌▘
+        --scrollbar='▕ '
+        --ellipsis=
+        --color="${(j:,:)fzf_theme}"
+    )
+
+    if command_exists rg; then
+        export FZF_DEFAULT_COMMAND='rg --files --follow --null'
+        fzf_flags+=(--read0)
+    fi
+
+    export FZF_DEFAULT_OPTS="${(j: :)fzf_flags}"
+}
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_env"
+
+function {
+    local plugin_root=${${(%):-%x}:P:h}/plugins
+
+    . "$plugin_root/zsh-completions/zsh-completions.plugin.zsh"
+    . "$plugin_root/zsh-defer/zsh-defer.plugin.zsh"
+
+    ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=()
+    ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=()
+    ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
+    zsh-defer . "$plugin_root/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    zsh-defer . "$plugin_root/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+    function _set_custom_zsh_highlight_styles {
+        local key
+        for key in ${(@k)ZSH_HIGHLIGHT_STYLES}; do
+            ZSH_HIGHLIGHT_STYLES[$key]=none
+        done
+
+        ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=5
+        ZSH_HIGHLIGHT_STYLES[precommand]=fg=2
+        ZSH_HIGHLIGHT_STYLES[builtin]=fg=2
+        ZSH_HIGHLIGHT_STYLES[function]=fg=2
+        ZSH_HIGHLIGHT_STYLES[command]=fg=2
+        ZSH_HIGHLIGHT_STYLES[alias]=fg=2
+        ZSH_HIGHLIGHT_STYLES[global-alias]=fg=2,bold
+        ZSH_HIGHLIGHT_STYLES[suffix-alias]=fg=2,underline
+        ZSH_HIGHLIGHT_STYLES[globbing]=fg=4
+        ZSH_HIGHLIGHT_STYLES[comment]=fg=3
+        ZSH_HIGHLIGHT_STYLES[path]=underline
+        ZSH_HIGHLIGHT_STYLES[path_prefix]=underline
+        ZSH_HIGHLIGHT_STYLES[autodirectory]=underline
+
+        unfunction _set_custom_zsh_highlight_styles
+    }
+
+    zsh-defer _set_custom_zsh_highlight_styles
+}
+
+if ! zmodload -e zsh/complist; then
+    zmodload zsh/complist
+fi
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' completer _extensions _complete _approximate
+zstyle ':completion:*' matcher-list '' m:{a-zA-Z}={A-Za-z} 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' complete-options true
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/compcache-$ZSH_VERSION"
+
+autoload -Uz compinit
+compinit -d "$ZSH_CACHE_DIR/compdump-$ZSH_VERSION"
+
+ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;)'
+ZLE_SPACE_SUFFIX_CHARS='&|'
+
+KEYTIMEOUT=1
+
+bindkey -v
+
+bindkey -r ^B ^C ^F ^Q ^S ^Z
+bindkey -rp ^X
+
+bindkey ^H backward-delete-char
+bindkey '^?' backward-delete-char
+bindkey ^W backward-kill-word
+bindkey ^U kill-whole-line
+
+bindkey ^N down-history
+bindkey ^P up-history
+
+bindkey ^X _expand_alias
+
+bindkey -M menuselect '^[' send-break
+bindkey -M menuselect '^[[Z' reverse-menu-complete
+
+autoload -Uz edit-command-line down-line-or-beginning-search up-line-or-beginning-search
+
+zle -N edit-command-line
+zle -N down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+
+bindkey ^K edit-command-line
+bindkey -a ^K edit-command-line
+
+bindkey ^E down-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+bindkey '^[OB' down-line-or-beginning-search
+bindkey -a ^E down-line-or-beginning-search
+bindkey -a '^[[B' down-line-or-beginning-search
+bindkey -a '^[OB' down-line-or-beginning-search
+bindkey -a j down-line-or-beginning-search
+bindkey ^Y up-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[OA' up-line-or-beginning-search
+bindkey -a ^Y up-line-or-beginning-search
+bindkey -a '^[[A' up-line-or-beginning-search
+bindkey -a '^[OA' up-line-or-beginning-search
+bindkey -a k up-line-or-beginning-search
+
+bindkey ^A autosuggest-accept
+bindkey -a ^A autosuggest-accept
+bindkey ^T autosuggest-toggle
+bindkey -a ^T autosuggest-toggle
+
+if command_exists fzf; then
+    autoload -Uz fzf-open
+    zle -N fzf-open
+    bindkey ^O fzf-open
+    bindkey -a ^O fzf-open
+else
+    bindkey -r ^O
+fi
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_bindings"
+
+function set_terminal_title {
+    print -Pn "\e]2;zsh: %~\a"
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd set_terminal_title
+
+function zle-line-init {
+    echo -ne '\e[6 q'
+}
+
+function zle-keymap-select {
+    if [[ $KEYMAP = vicmd ]]; then
+        echo -ne '\e[2 q'
+    else
+        echo -ne '\e[6 q'
+    fi
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select
+
+ZLE_RPROMPT_INDENT=0
+
+zle_highlight=(region:fg=15,bg=4 paste:none)
+
+if ! (zmodload -e zsh/nearcolor || [[ ${COLORTERM-} = *(24bit|truecolor)* ]]); then
+    zmodload zsh/nearcolor
+fi
+
+autoload -Uz promptinit
+promptinit
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_prompt"
+
+if [[ -z ${prompt_theme-} ]]; then
+    prompt custom
+fi
+
+if command_exists eza; then
+    export EZA_COLORS=reset
+    alias ls='eza --group-directories-first'
+    alias lt='eza --group-directories-first --tree'
+    alias la='eza --all --group-directories-first'
+    alias ll='eza --all --group-directories-first --long'
+else
+    if ls --color -d . &>/dev/null; then
+        alias ls='ls --color'
+        alias la='\ls -A --color'
+        alias ll='\ls -A --color -l'
+    else
+        alias la='ls -A'
+        alias ll='ls -A -l'
+    fi
+fi
+
+source_if_readable "$ZSH_CONFIG_DIR/rc_aliases"

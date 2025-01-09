@@ -1,0 +1,58 @@
+function prompt_custom_help {
+    echo 'My custom one-line prompt'
+}
+
+prompt_opts=(cr sp percent subst)
+
+local cleanup_commands=('unfunction prompt_custom_help')
+
+cleanup_commands+=("${PROMPT_EOL_MARK+typeset -g PROMPT_EOL_MARK=}${PROMPT_EOL_MARK-unset PROMPT_EOL_MARK}")
+PROMPT_EOL_MARK=%3K%0F␤%f%k
+
+cleanup_commands+=("${VIRTUAL_ENV_DISABLE_PROMPT+typeset -g VIRTUAL_ENV_DISABLE_PROMPT=}${VIRTUAL_ENV_DISABLE_PROMPT-unset VIRTUAL_ENV_DISABLE_PROMPT}")
+VIRTUAL_ENV_DISABLE_PROMPT=1
+
+if (( ! ${precmd_functions[(Ie)vcs_info]-0} )); then
+    autoload -Uz vcs_info
+    autoload -Uz add-zsh-hook
+    add-zsh-hook precmd vcs_info
+    cleanup_commands+=('add-zsh-hook -d precmd vcs_info')
+fi
+
+cleanup_commands+=("zstyle -d ':vcs_info:*'; zstyle -d ':vcs_info:git:*'")
+cleanup_commands+=($(
+    zstyle -L ':vcs_info:\*'
+    zstyle -L ':vcs_info:git:\*'
+))
+
+zstyle -d ':vcs_info:*'
+zstyle -d ':vcs_info:git:*'
+
+zstyle ':vcs_info:*' max-exports 1
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' unstagedstr '?'
+zstyle ':vcs_info:git:*' stagedstr !
+zstyle ':vcs_info:git:*' formats ' %B%13F%b%f%%b%u%c'
+zstyle ':vcs_info:git:*' actionformats ' %B%13F%b%f%%b%u%c %B%11F%a%f%%b'
+
+prompt_cleanup ${(j:; :)cleanup_commands}
+
+PS1=%B
+
+if [[ -v SSH_TTY ]]; then
+    if [[ $OSTYPE = darwin* ]]; then
+        PS1+='%3F%n%f %1F$(scutil --get LocalHostName)%f '
+    else
+        PS1+='%3F%n%f %1F%m%f '
+    fi
+fi
+
+PS1+='%4F%1~%f%b${vcs_info_msg_0_-} %F{%(?.10.9)}%(!.#.$)%f '
+RPS1='${VIRTUAL_ENV_PROMPT+%B%3F$VIRTUAL_ENV_PROMPT%f%b%(1j. .)}%(1j.%B%6F%(2j.%j jobs.1 job)%f%b.)'
+
+PS2=
+RPS2=%5F%^%f
+
+PS3='%6F?%f '
+RPS3=

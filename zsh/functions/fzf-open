@@ -1,0 +1,9 @@
+zle || return
+
+local editor=${VISUAL:-${EDITOR-}}
+
+if [[ -n $editor ]]; then
+    fzf --multi --bind "enter:become($editor {+})" --border-label=' Open ' </dev/tty
+fi
+
+zle redisplay &>/dev/null
