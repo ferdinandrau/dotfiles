@@ -1,1 +1,1 @@
-source_if_readable "$ZSH_CONFIG_DIR/login.zsh"
+source_if_readable "$ZSH_CONFIG_DIR/login"
