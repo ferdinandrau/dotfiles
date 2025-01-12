@@ -1,0 +1,29 @@
+auto-update = off
+shell-integration-features = no-cursor, no-title
+copy-on-select = false
+
+macos-titlebar-style = native
+macos-titlebar-proxy-icon = hidden
+macos-non-native-fullscreen = visible-menu
+macos-option-as-alt = false
+
+font-family = Ioveska
+font-size = 15
+
+theme = light:custom-light, dark:custom-dark
+
+window-padding-balance = true
+window-padding-x = 6
+window-padding-y = 6
+
+adjust-cursor-thickness = 50%
+
+resize-overlay = never
+unfocused-split-opacity = 1
+
+quick-terminal-autohide = false
+quick-terminal-animation-duration = 0
+
+keybind = global:ctrl+alt+t=toggle_quick_terminal
+
+config-file = ?local
