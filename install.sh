@@ -21,4 +21,12 @@ function install_zsh
     ln -s "$script_dir/zsh/.zshenv" "$HOME/."
 }
 
+function install_ghostty
+{
+    mkdir -p "$config_dir/ghostty"
+    ln -s "$script_dir/ghostty/config" "$config_dir/ghostty/."
+    ln -s "$script_dir/ghostty/themes" "$config_dir/ghostty/."
+}
+
 install_zsh
+install_ghostty
