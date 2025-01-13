@@ -62,4 +62,8 @@ export GOPATH=${XDG_DATA_HOME:-$HOME/.local/share}/go
 export GOTOOLCHAIN=auto
 append_to_path "${GOBIN:-$GOPATH/bin}"
 
+export RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rust/rustup
+export CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rust/cargo
+append_to_path "$CARGO_HOME/bin"
+
 source_if_readable "$ZSH_CONFIG_DIR/env"
