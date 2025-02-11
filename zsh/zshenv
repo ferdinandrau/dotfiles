@@ -59,6 +59,7 @@ fi
 prepend_to_path "$HOME/.local/bin"
 
 export LESSHISTFILE=${XDG_STATE_HOME:-$HOME/.local/state}/less/history
+mkdir -p $LESSHISTFILE:P:h
 
 export GOPATH=${XDG_DATA_HOME:-$HOME/.local/share}/go
 export GOTOOLCHAIN=auto
