@@ -58,6 +58,8 @@ fi
 
 prepend_to_path "$HOME/.local/bin"
 
+export LESSHISTFILE=${XDG_CONFIG_HOME:-$HOME/.config}/less/history
+
 export GOPATH=${XDG_DATA_HOME:-$HOME/.local/share}/go
 export GOTOOLCHAIN=auto
 append_to_path "${GOBIN:-$GOPATH/bin}"
