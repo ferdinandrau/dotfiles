@@ -28,12 +28,5 @@ function install_ghostty
     ln -s "$script_dir/ghostty/themes" "$config_dir/ghostty/."
 }
 
-function install_aerospace
-{
-    mkdir -p "$config_dir/aerospace"
-    ln -s "$script_dir/aerospace/aerospace.toml" "$config_dir/aerospace/."
-}
-
 install_zsh
 install_ghostty
-install_aerospace
