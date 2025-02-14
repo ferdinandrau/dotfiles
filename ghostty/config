@@ -9,12 +9,16 @@ macos-option-as-alt = false
 
 font-family = Ioveska
 font-size = 15
+font-feature = -dlig
 
 theme = light:custom-light, dark:custom-dark
 
 window-padding-balance = true
 window-padding-x = 6
 window-padding-y = 6
+
+background-opacity = 0.98
+background-blur = true
 
 adjust-cursor-thickness = 50%
 
