@@ -26,10 +26,10 @@ function {
         fg:-1:regular
         bg:-1:regular
         hl:1:bold
-        current-fg:15:regular
-        current-bg:8:regular
+        current-fg:0:regular
+        current-bg:7:regular
         gutter:-1:regular
-        current-hl:1:bold
+        current-hl:0:regular
         query:-1:regular
         info:8:regular
         border:8:regular
