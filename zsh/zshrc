@@ -203,6 +203,10 @@ function zle-line-init {
     echo -ne '\e[6 q'
 }
 
+function zle-line-finish {
+    echo -ne '\e[6 q'
+}
+
 function zle-keymap-select {
     if [[ $KEYMAP = vicmd ]]; then
         echo -ne '\e[2 q'
@@ -212,6 +216,7 @@ function zle-keymap-select {
 }
 
 zle -N zle-line-init
+zle -N zle-line-finish
 zle -N zle-keymap-select
 
 ZLE_RPROMPT_INDENT=0
