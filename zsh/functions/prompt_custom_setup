@@ -12,13 +12,13 @@ PROMPT_EOL_MARK=%3K%0F␤%f%k
 cleanup_commands+=("${VIRTUAL_ENV_DISABLE_PROMPT+typeset -g VIRTUAL_ENV_DISABLE_PROMPT=}${VIRTUAL_ENV_DISABLE_PROMPT-unset VIRTUAL_ENV_DISABLE_PROMPT}")
 VIRTUAL_ENV_DISABLE_PROMPT=1
 
+autoload -Uz vcs_info
+autoload -Uz add-zsh-hook
+
 if (( ${precmd_functions[(Ie)vcs_info]-0} )); then
     add-zsh-hook -d precmd vcs_info
     cleanup_commands+=('add-zsh-hook precmd vcs_info')
 fi
-
-autoload -Uz vcs_info
-autoload -Uz add-zsh-hook
 
 function async_vcs_info_callback {
     local -i fd=$1
@@ -73,7 +73,7 @@ if [[ -v SSH_TTY ]]; then
 fi
 
 PS1+='%4F%1~%f%b${vcs_info_msg_0_-} %F{%(?.10.9)}%(?..%? )%B%(!.#.$)%b%f '
-RPS1='${VIRTUAL_ENV_PROMPT+%B%3F$VIRTUAL_ENV_PROMPT%f%b%(1j. .)}%(1j.%B%6F%(2j.%j jobs.1 job)%f%b.)'
+RPS1='${VIRTUAL_ENV_PROMPT+%B%3F${(*)${(*)VIRTUAL_ENV_PROMPT/#[[:space:]]#}/%[[:space:]]#}%f%b%(1j. .)}%(1j.%B%6F%(2j.%j jobs.1 job)%f%b.)'
 
 PS2=
 RPS2=%5F%^%f
