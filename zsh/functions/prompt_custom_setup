@@ -12,18 +12,42 @@ PROMPT_EOL_MARK=%3K%0F␤%f%k
 cleanup_commands+=("${VIRTUAL_ENV_DISABLE_PROMPT+typeset -g VIRTUAL_ENV_DISABLE_PROMPT=}${VIRTUAL_ENV_DISABLE_PROMPT-unset VIRTUAL_ENV_DISABLE_PROMPT}")
 VIRTUAL_ENV_DISABLE_PROMPT=1
 
-if (( ! ${precmd_functions[(Ie)vcs_info]-0} )); then
-    autoload -Uz vcs_info
-    autoload -Uz add-zsh-hook
-    add-zsh-hook precmd vcs_info
-    cleanup_commands+=('add-zsh-hook -d precmd vcs_info')
+if (( ${precmd_functions[(Ie)vcs_info]-0} )); then
+    add-zsh-hook -d precmd vcs_info
+    cleanup_commands+=('add-zsh-hook precmd vcs_info')
 fi
 
+autoload -Uz vcs_info
+autoload -Uz add-zsh-hook
+
+function async_vcs_info_callback {
+    local -i fd=$1
+    local REPLY
+    local old_info_msg=${vcs_info_msg_0_-}
+    zle -F $fd
+    read -ru $fd
+    eval "$REPLY"
+    if [[ ${vcs_info_msg_0_-} != $old_info_msg ]]; then
+        zle reset-prompt
+    fi
+    exec {fd}<&-
+}
+
+zle -N async_vcs_info_callback
+
+function async_vcs_info {
+    local -i fd=-1
+    exec {fd}< <(vcs_info && print -r -- "$(typeset -p vcs_info_msg_0_)")
+    zle -Fw $fd async_vcs_info_callback
+}
+
+add-zsh-hook precmd async_vcs_info
+
+cleanup_commands+=('add-zsh-hook -d precmd async_vcs_info; unfunction async_vcs_info')
+cleanup_commands+=('zle -D async_vcs_info_callback; unfunction async_vcs_info_callback')
+
 cleanup_commands+=("zstyle -d ':vcs_info:*'; zstyle -d ':vcs_info:git:*'")
-cleanup_commands+=($(
-    zstyle -L ':vcs_info:\*'
-    zstyle -L ':vcs_info:git:\*'
-))
+cleanup_commands+=($(zstyle -L ':vcs_info:\*'; zstyle -L ':vcs_info:git:\*'))
 
 zstyle -d ':vcs_info:*'
 zstyle -d ':vcs_info:git:*'
@@ -48,7 +72,7 @@ if [[ -v SSH_TTY ]]; then
     fi
 fi
 
-PS1+='%4F%1~%f%b${vcs_info_msg_0_-} %F{%(?.10.9)}%(!.#.$)%f '
+PS1+='%4F%1~%f%b${vcs_info_msg_0_-} %F{%(?.10.9)}%(?..%? )%B%(!.#.$)%b%f '
 RPS1='${VIRTUAL_ENV_PROMPT+%B%3F$VIRTUAL_ENV_PROMPT%f%b%(1j. .)}%(1j.%B%6F%(2j.%j jobs.1 job)%f%b.)'
 
 PS2=
